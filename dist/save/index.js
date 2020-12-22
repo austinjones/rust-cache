@@ -55129,12 +55129,12 @@ async function getCacheConfig() {
         core.saveState(stateHash, lockHash);
     }
     let key = `v0-rust-`;
-    let inputKey = core.getInput("key");
+    const inputKey = core.getInput("key");
+    const job = process.env.GITHUB_JOB;
     if (inputKey) {
         key += `${inputKey}-`;
     }
-    const job = process.env.GITHUB_JOB;
-    if (job) {
+    else if (job) {
         key += `${job}-`;
     }
     key += await getRustKey();

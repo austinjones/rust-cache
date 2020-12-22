@@ -55129,12 +55129,12 @@ async function getCacheConfig() {
         core.saveState(stateHash, lockHash);
     }
     let key = `v0-rust-`;
-    let inputKey = core.getInput("key");
+    const inputKey = core.getInput("key");
+    const job = process.env.GITHUB_JOB;
     if (inputKey) {
         key += `${inputKey}-`;
     }
-    const job = process.env.GITHUB_JOB;
-    if (job) {
+    else if (job) {
         key += `${job}-`;
     }
     key += await getRustKey();
@@ -55267,14 +55267,20 @@ async function run() {
                 const packages = await getPackages();
                 await cleanTarget(packages);
             }
+            setCacheHitOutput(restoreKey === key);
         }
         else {
             core.info("No cache found.");
+            setCacheHitOutput(false);
         }
     }
     catch (e) {
+        setCacheHitOutput(false);
         core.info(`[warning] ${e.message}`);
     }
+}
+function setCacheHitOutput(cacheHit) {
+    core.setOutput("cache-hit", cacheHit.toString());
 }
 run();
 
