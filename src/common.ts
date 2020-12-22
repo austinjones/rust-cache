@@ -48,13 +48,12 @@ export async function getCacheConfig(): Promise<CacheConfig> {
 
   let key = `v0-rust-`;
 
-  let inputKey = core.getInput("key");
+  const inputKey = core.getInput("key");
+  const job = process.env.GITHUB_JOB;
+
   if (inputKey) {
     key += `${inputKey}-`;
-  }
-
-  const job = process.env.GITHUB_JOB;
-  if (job) {
+  } else if (job) {
     key += `${job}-`;
   }
 
@@ -209,5 +208,5 @@ export async function rm(parent: string, dirent: fs.Dirent) {
     } else if (dirent.isDirectory()) {
       await io.rmRF(fileName);
     }
-  } catch {}
+  } catch { }
 }
